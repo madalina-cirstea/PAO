@@ -13,9 +13,13 @@ Repository for Advanced object-oriented programming laboratories (Java programmi
 
 ## Actions within the system
 - 1. Enroll new patient.
+- Unenroll a patient.
 - 2. Print all patients.
 - 3. List all doctors.
 - 4. List all patients assigned to a given doctor.
 - 5. Add a new medical condition to a given patient.
 - 6. Remove a medical condition from a given patient.
 - 7. Change medication for a given patient.
+- 8. Fire a doctor and move all patients assigned to him/ her to another doctor (with the same specialization).
+- make admin/ user class
+
