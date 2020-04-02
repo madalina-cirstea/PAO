@@ -32,3 +32,6 @@ Repository for Advanced object-oriented programming laboratories (Java programmi
 9. Add a medical condition to a given patient.
 10. Print the medical history of a given patient.
 
+## Notes:
+Input must be inserted exactly as required (input validation will be included further along with dealing with exceptions).
+
