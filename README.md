@@ -8,8 +8,12 @@ Repository for Advanced object-oriented programming laboratories (Java programmi
 - User
 - Hospital Manager
 - Person (abstract class)
+- Doctor inherit from Person
+- GeneralPractitioner inherit from Doctor
 - Patient inherit from Person
 - Minor, Adult, Senior inherit from Patient
+- Consultation
+- TimeSlot
 - Drug (contains the name of the drug and the recommended dose)
 - MedicalCondition (contains nameOfInllness, firstDateOfReport, lastDateOfReport and a list of presciption drugs)
 
@@ -33,4 +37,7 @@ Repository for Advanced object-oriented programming laboratories (Java programmi
 - Remove a medical condition from a given patient.
 - Change medication for a given patient.
 
+## Notes:
+Code needs a little refactoring but I hadn't had enough time to do it.
+The user input must be correct, otherwise the program crashes (I will include input validation later).
 
