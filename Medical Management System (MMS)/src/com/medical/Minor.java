@@ -8,9 +8,10 @@ public class Minor extends Patient {
         this.tutor = tutor;
     }
 
+    @Override
     public void printInfo() {
         super.printInfo();
-        System.out.println("Legal tutor: ");
+        System.out.print("legal tutor: ");
         tutor.printGeneralInformation();
     }
 }

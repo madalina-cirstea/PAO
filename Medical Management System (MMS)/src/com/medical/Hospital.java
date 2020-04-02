@@ -7,14 +7,11 @@ public class Hospital {
     private String name;
     private List<Doctor> doctors;
     private List<Patient> enrolledPatients;
-    private List<Patient> scheduledPatients;
-
 
     public Hospital(String name) {
         this.name = name;
         this.doctors = new ArrayList<Doctor>();
         this.enrolledPatients = new ArrayList<Patient>();
-        this.scheduledPatients = new ArrayList<Patient>();
     }
 
     public void addDoctor(String specialization, String name, String CNP, int age, String sex) {
@@ -106,6 +103,15 @@ public class Hospital {
                 count++;
                 System.out.println(count + ". " + doctors.get(i).getName() + " (" + doctors.get(i).getAge() + " years) " + doctors.get(i).getSpecialization());
             }
+    }
+
+    public void printScheduledConsultations() {
+        for(int i = 0; i < doctors.size(); i++){
+            Doctor doctor = doctors.get(i);
+            System.out.println(doctor.getName() + ":");
+            doctor.listScheduledConsultations();
+            System.out.println();
+        }
     }
 
 }

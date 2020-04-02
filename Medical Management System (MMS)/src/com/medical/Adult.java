@@ -8,6 +8,7 @@ public class Adult extends Patient {
         this.mothlyIncome = mothlyIncome;
     }
 
+    @Override
     public void printInfo() {
         super.printInfo();
         System.out.println("monthly income: " + mothlyIncome);

@@ -1,15 +1,41 @@
 package com.medical;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Scanner;
 
 public class HospitalManager {
+    enum TypeOfConsultation {
+        GENERAL,
+        NEUROLOGICAL,
+        CARDIOLOGICAL
+    }
+
     private Hospital hospital;
     private Scanner scanner;
+    private LinkedHashMap<String, List<Drug>> associatedDrugs;
 
     public HospitalManager(Hospital hospital) {
         this.hospital = hospital;
         this.scanner = new Scanner(System.in);
+
+        // hospital treatment scheme
+        this.associatedDrugs = new LinkedHashMap<String, List<Drug>>();
+
+        associatedDrugs.put("hypertension", new ArrayList<Drug>());
+        associatedDrugs.put("migraine", new ArrayList<Drug>());
+        associatedDrugs.put("heart attack", new ArrayList<Drug>());
+
+        associatedDrugs.get("hypertension").add(new Drug("Betaloc", 2));
+        associatedDrugs.get("hypertension").add(new Drug("Aspacardin", 3));
+
+        associatedDrugs.get("migraine").add(new Drug("Cefalin", 3));
+        associatedDrugs.get("migraine").add(new Drug("Xsess", 1));
+
+        associatedDrugs.get("heart attack").add(new Drug("Staxbin", 1));
+        associatedDrugs.get("heart attack").add(new Drug("HARTlix", 3));
     }
 
     public void printMenu() {
@@ -17,17 +43,15 @@ public class HospitalManager {
         System.out.println("********* MENU *********");
         System.out.println("0. Exit.");
         System.out.println("1. Enroll new patient to a general practitioner.");
-        System.out.println("2. Print all enrolled patients.");
+        System.out.println("2. Print all enrolled patients per hospital.");
         System.out.println("3. List all enrolled patients for a given general practitioner.");
         System.out.println("4. List all doctors.");
         System.out.println("5. List all doctors for a given specialization.");
         System.out.println("6. Schedule a medical consultation.");
         System.out.println("7. List all scheduled consultations for a given doctor.");
-        System.out.println();
-        System.out.println("*** Under construction: ***");
-        System.out.println(". Add a new medical condition to a given patient.");
-        System.out.println(". Remove a medical condition from a given patient.");
-        System.out.println(".Change medication for a given patient.");
+        System.out.println("8. List all scheduled consultations per hospital.");
+        System.out.println("9. Add a medical condition to a given patient.");
+        System.out.println("10. Print the medical history of a given patient.");
     }
 
     public void start(User user) {
@@ -37,8 +61,7 @@ public class HospitalManager {
         while (opp != 0) {
             switch (opp) {
                 case 1:
-                    System.out.println("***** Enrol new patient to a general practitioner *****");
-
+                    System.out.println("***** Enroll new patient to a general practitioner *****");
                     String CNP = user.insertCNP(scanner);
 
                     if (hospital.isEnrolled(CNP))
@@ -74,20 +97,24 @@ public class HospitalManager {
                     break;
 
                 case 2:
-                    System.out.println("**** Print all enrolled patients *****");
+                    System.out.println("**** Print all enrolled patients per hospital *****");
                     LocalDate currentDate = LocalDate.now();
                     System.out.println("Patients enrolled in hospital at " + currentDate + ":");
                     hospital.printEnrolledPatients();
                     break;
 
-                case 3:
+                case 3: {
                     System.out.println("***** List all enrolled patients for a given general practitioner *****");
                     String doctorName = user.insertDoctorName(scanner);
-                    if (hospital.isEmployedAs(doctorName, "general practitioner"))
+                    if (hospital.isEmployedAs(doctorName, "general practitioner")) {
                         hospital.printEnrolledPatients(doctorName);
-                    else
+                        // alternative
+                        // GeneralPractitioner generalPractitioner = (GeneralPractitioner) hospital.getDoctor(doctorName);
+                        // generalPractitioner.printAssignedPatients();
+                    } else
                         System.out.println(doctorName + " is not working as a general practitioner in our hospital.");
-                    break;
+                }
+                break;
 
                 case 4:
                     System.out.println("***** List all doctors *****");
@@ -97,81 +124,103 @@ public class HospitalManager {
                 case 5:
                     System.out.println("***** List all doctors for a given specialization *****");
                     System.out.println("Specialization: (general practitioner, cardiologist, neurologist)");
-                    scanner.nextLine();
-                    String specialization = scanner.nextLine();
-                    hospital.listAllDoctors(specialization);
+                    String specialization = user.insertSpecialization(scanner);
+                    if (!specialization.equals("general practitioner") && !specialization.equals("cardiologist") && !specialization.equals("neurologist"))
+                        System.out.println("Our hospital has no " + specialization + " specialization.");
+                    else
+                        hospital.listAllDoctors(specialization);
                     break;
 
-                case 6:
+                case 6: {
                     System.out.println("***** Schedule a medical consultation *****");
                     System.out.println("Patient information:");
-                    System.out.println("CNP:");
-                    scanner.nextLine();
-                    String patientCNP = scanner.nextLine();
-
                     Patient patient;
+                    String patientCNP = user.insertCNP(scanner);
 
                     if (hospital.isEnrolled(patientCNP)) {
                         // already enrolled patient
                         patient = hospital.getEnrolledPatient(patientCNP);
                     } else {
-                        System.out.println("Name: ");
-                        String name = scanner.nextLine();
-
-                        System.out.println("Age: ");
-                        int age = scanner.nextInt();
-
-                        System.out.println("Sex: (male/ female)");
-                        scanner.nextLine();
-                        String sex = scanner.nextLine();
-
-                        // occasional patient
+                        // create occasional patient for further medical consult
+                        String name = user.insertName(scanner);
+                        int age = user.insertAge(scanner);
+                        String sex = user.insertSex(scanner);
                         patient = new Patient(name, patientCNP, age, sex, null);
                     }
 
-                    System.out.println("0. general     1. neurological    2. cardiological");
-                    System.out.println("Type of consultation:");
-                    int num = scanner.nextInt();
-                    if (num == Main.TypeOfConsultation.GENERAL.ordinal()) {
+                    int type = user.insertConsultationType(scanner);
+                    if (type == HospitalManager.TypeOfConsultation.GENERAL.ordinal()) {
                         hospital.listAllDoctors("general practitioner");
-                    } else if (num == Main.TypeOfConsultation.NEUROLOGICAL.ordinal()) {
+                    } else if (type == HospitalManager.TypeOfConsultation.NEUROLOGICAL.ordinal()) {
                         hospital.listAllDoctors("neurologist");
-                    } else if (num == Main.TypeOfConsultation.CARDIOLOGICAL.ordinal()) {
+                    } else if (type == HospitalManager.TypeOfConsultation.CARDIOLOGICAL.ordinal()) {
                         hospital.listAllDoctors("cardiologist");
                     }
 
-                    System.out.println("Doctor name: ");
-                    scanner.nextLine();
-                    String name = scanner.nextLine();
-                    Doctor doctor = hospital.getDoctor(name);
+                    String doctorName = user.insertDoctorName(scanner);
+                    if (hospital.isEmployed(doctorName)) {
+                        Doctor doctor = hospital.getDoctor(doctorName);
 
-                    doctor.printProgram();
-                    doctor.printAvailableSlots();
+                        doctor.printProgram();
+                        doctor.printAvailableSlots();
 
-                    System.out.println("Choosen time slot:");
-                    System.out.println("Day: ");
-                    String day = scanner.nextLine();
-                    System.out.println("Start hour:");
-                    int startHour = scanner.nextInt();
-                    System.out.println(name + " " + day + " " + startHour);
+                        String day = user.insertDayOfWeek(scanner);
+                        int startHour = user.insertStartHour(scanner);
+                        String date = new String(day + ": " + startHour + " - " + (startHour + 1));
 
-                    System.out.println("Confirm (yes/ no):");
-                    scanner.nextLine();
-                    String confirm = scanner.nextLine();
-                    if (confirm.equals("yes")) {
-                        System.out.println("yes");
-                        doctor.scheduleConsultation(patient, day, startHour);
-                    }
-                    break;
+                        if (doctor.isAvailable(date)) {
+                            String confirmation = user.confirmAppointment(scanner, doctorName, date);
+
+                            if (confirmation.equals("yes")) {
+                                doctor.scheduleConsultation(patient, date);
+                            }
+                        } else
+                            System.out.println("You have chosen an unavailable slot.");
+                    } else
+                        System.out.println(doctorName + " is not working as a doctor in our hospital.");
+                }
+                break;
 
                 case 7:
                     System.out.println("***** List all scheduled consultations for a given doctor *****");
-                    System.out.println("Doctor name: ");
-                    scanner.nextLine();
-                    String docName = scanner.nextLine();
-                    Doctor doc = hospital.getDoctor(docName);
-                    doc.listScheduledConsultations();
+                    String doctorName = user.insertDoctorName(scanner);
+                    if (hospital.isEmployed(doctorName)) {
+                        Doctor doctor = hospital.getDoctor(doctorName);
+                        doctor.listScheduledConsultations();
+                    } else
+                        System.out.println(doctorName + " is not working as a doctor in our hospital.");
+
                     break;
+
+                case 8:
+                    System.out.println("***** List all scheduled consultations per hospital *****");
+                    hospital.printScheduledConsultations();
+                    break;
+
+                case 9: {
+                    System.out.println("***** Add a medical condition to a given patient *****");
+                    String patientCNP = user.insertCNP(scanner);
+                    if (hospital.isEnrolled(patientCNP)) {
+                        Patient patient = hospital.getEnrolledPatient(patientCNP);
+                        String nameOfIllness = user.insertIllness(scanner);
+
+                        MedicalCondition medicalCondition = new MedicalCondition(nameOfIllness, associatedDrugs.get(nameOfIllness));
+                        patient.addMedicalCondition(medicalCondition);
+                    } else
+                        System.out.println("Patient with CNP " + patientCNP + " is not enrolled to our hospital.");
+                }
+                break;
+
+                case 10:
+                    System.out.println("***** Print the medical history of a given patient *****");
+                    String patientCNP = user.insertCNP(scanner);
+                    if (hospital.isEnrolled(patientCNP)) {
+                        Patient patient = hospital.getEnrolledPatient(patientCNP);
+                        patient.printMedicalHistory();
+                    } else
+                        System.out.println("Medical history unavailable. Patient with CNP " + patientCNP + " is not enrolled to our hospital.");
+                    break;
+
                 default:
                     System.out.println("Invalid option!");
             }
@@ -180,6 +229,4 @@ public class HospitalManager {
             opp = user.chooseOperation(scanner);
         }
     }
-
-
 }

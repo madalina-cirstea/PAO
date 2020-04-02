@@ -8,6 +8,7 @@ public class Senior extends Patient {
         this.pension = pension;
     }
 
+    @Override
     public void printInfo() {
         super.printInfo();
         System.out.println("pension: " + pension);

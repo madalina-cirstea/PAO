@@ -1,25 +1,20 @@
 package com.medical;
 
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Doctor extends Person {
     private String specialization;
-//    private List<Patient> scheduledPatients;
     private List<Consultation> scheduledConsultations;
-    private HashMap<String, TimeSlot> program;
+    private LinkedHashMap<String, TimeSlot> program;
     private List<String> availableSlots;
 
 
     public Doctor(String specialization, String name, String CNP, int age, String sex) {
         super(name, CNP, age, sex);
         this.specialization = specialization;
-//        this.scheduledPatients = new ArrayList<Patient>();
 
-        this.program = new HashMap<String, TimeSlot>();
+        this.program = new LinkedHashMap<String, TimeSlot>();
+        // add new method setProgram for doctor (pass corresponding time slots for each day of week)
         program.put("Monday", new TimeSlot(10, 18));
         program.put("Tuesday", new TimeSlot(10, 18));
         program.put("Wednesday", new TimeSlot(10, 18));
@@ -41,19 +36,11 @@ public class Doctor extends Person {
     }
 
     public void addAssignedPatient(Patient patient) {
-
+        // need this function for overriding it in extended class GeneralPractitioner which contains a list of assigned patients
     }
-
-    public void printInfo() {
-        super.printGeneralInformation();
-    }
-
-//    public void printAllScheduledPatients() {
-//        for (int i = 0; i < scheduledPatients.size(); i++)
-//            scheduledPatients.get(i).printGeneralInformation();
-//    }
 
     public void printProgram() {
+        System.out.println();
         System.out.println("Program:");
         for (Map.Entry<String, TimeSlot> entry : program.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue().getStartHour() + " - " + entry.getValue().getEndHour());
@@ -61,17 +48,32 @@ public class Doctor extends Person {
     }
 
     public void printAvailableSlots() {
+        System.out.println();
+        System.out.println("Available slots:");
         for (int i = 0; i < availableSlots.size(); i++)
             System.out.println(availableSlots.get(i));
+        System.out.println();
     }
 
-    public void scheduleConsultation(Patient patient, String day, int startHour) {
-        scheduledConsultations.add(new Consultation(patient, new String(day + ": " + startHour + " - " + (startHour + 1))));
-        availableSlots.remove(new String(day + ": " + startHour + " - " + (startHour + 1)));
+    public void scheduleConsultation(Patient patient, String date) {
+        scheduledConsultations.add(new Consultation(patient, date));
+        availableSlots.remove(date);
     }
 
     public void listScheduledConsultations() {
-        for (int i = 0; i < scheduledConsultations.size(); i++)
-            scheduledConsultations.get(i).print();
+        if (scheduledConsultations.size() == 0)
+            System.out.println("No consultations scheduled for " + this.getName() + ".");
+        else {
+            for (int i = 0; i < scheduledConsultations.size(); i++)
+                scheduledConsultations.get(i).print();
+        }
     }
+
+    public boolean isAvailable(String date) {
+        for (int i = 0; i < availableSlots.size(); i++)
+            if (availableSlots.get(i).equals(date))
+                return true;
+        return false;
+    }
+
 }

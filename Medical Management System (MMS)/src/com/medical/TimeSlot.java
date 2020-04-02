@@ -1,7 +1,5 @@
 package com.medical;
 
-import java.sql.Time;
-
 public class TimeSlot {
     private int startHour;
     private int endHour;
@@ -18,4 +16,5 @@ public class TimeSlot {
     public int getEndHour() {
         return endHour;
     }
+
 }
