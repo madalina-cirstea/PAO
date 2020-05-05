@@ -1,10 +1,7 @@
 package com.medical;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class HospitalManager {
     enum TypeOfConsultation {
@@ -76,8 +73,7 @@ public class HospitalManager {
                             String tutorCNP = user.insertTutorCNP(scanner);
 
                             if (hospital.isEnrolled(tutorCNP)) {
-                                String doctorName = user.chooseDoctorName(scanner, hospital, "general practitioner");
-                                hospital.enrollMinor(name, CNP, age, sex, hospital.getEnrolledPatient(tutorCNP), hospital.getDoctor(doctorName));
+                                hospital.enrollMinor(name, CNP, age, sex, hospital.getEnrolledPatient(tutorCNP), user.chooseDoctor(scanner, hospital, "general practitioner"));
                             } else {
                                 System.out.println("The tutor of the minor must be already enrolled at the hospital in order to enroll the minor to the same hospital!");
                                 System.out.println("Enroll the tutor, than enroll the minor!");
@@ -85,13 +81,11 @@ public class HospitalManager {
                         } else if (age > 60) {
                             // senior
                             float pension = user.insertPension(scanner);
-                            String doctorName = user.chooseDoctorName(scanner, hospital, "general practitioner");
-                            hospital.enrollSenior(name, CNP, age, sex, pension, hospital.getDoctor(doctorName));
+                            hospital.enrollSenior(name, CNP, age, sex, pension, user.chooseDoctor(scanner, hospital, "general practitioner"));
                         } else {
                             // adult
                             float monthlyIncome = user.insertMonthlyIncome(scanner);
-                            String doctorName = user.chooseDoctorName(scanner, hospital, "general practitioner");
-                            hospital.enrollAdult(name, CNP, age, sex, monthlyIncome, hospital.getDoctor(doctorName));
+                            hospital.enrollAdult(name, CNP, age, sex, monthlyIncome, user.chooseDoctor(scanner, hospital, "general practitioner"));
                         }
                     }
                     break;
@@ -121,7 +115,7 @@ public class HospitalManager {
                     hospital.listAllDoctors();
                     break;
 
-                case 5:
+                case 5: {
                     System.out.println("***** List all doctors for a given specialization *****");
                     System.out.println("Specialization: (general practitioner, cardiologist, neurologist)");
                     String specialization = user.insertSpecialization(scanner);
@@ -129,7 +123,8 @@ public class HospitalManager {
                         System.out.println("Our hospital has no " + specialization + " specialization.");
                     else
                         hospital.listAllDoctors(specialization);
-                    break;
+                }
+                break;
 
                 case 6: {
                     System.out.println("***** Schedule a medical consultation *****");
@@ -148,36 +143,46 @@ public class HospitalManager {
                         patient = new Patient(name, patientCNP, age, sex, null);
                     }
 
-                    int type = user.insertConsultationType(scanner);
+                    int type = user.insertConsultationType(scanner, hospital);
+                    String specialization;
+
                     if (type == HospitalManager.TypeOfConsultation.GENERAL.ordinal()) {
-                        hospital.listAllDoctors("general practitioner");
+                        specialization = new String("general practitioner");
                     } else if (type == HospitalManager.TypeOfConsultation.NEUROLOGICAL.ordinal()) {
-                        hospital.listAllDoctors("neurologist");
-                    } else if (type == HospitalManager.TypeOfConsultation.CARDIOLOGICAL.ordinal()) {
-                        hospital.listAllDoctors("cardiologist");
+                        specialization = new String("neurologist");
+                    } else {
+                        specialization = new String("cardiologist");
                     }
 
-                    String doctorName = user.insertDoctorName(scanner);
-                    if (hospital.isEmployed(doctorName)) {
-                        Doctor doctor = hospital.getDoctor(doctorName);
+                    hospital.listAllDoctors(specialization);
+                    String doctorName;
 
-                        doctor.printProgram();
-                        doctor.printAvailableSlots();
+                    while (true) {
+                        doctorName = user.insertDoctorName(scanner);
+                        if (hospital.isEmployedAs(doctorName, specialization))
+                            break;
+                        System.out.println(doctorName + " is not working as a " + specialization + "doctor in our hospital.");
+                    }
 
+                    Doctor doctor = hospital.getDoctor(doctorName);
+                    doctor.printProgram();
+                    doctor.printAvailableSlots();
+
+                    while (true) {
                         String day = user.insertDayOfWeek(scanner);
                         int startHour = user.insertStartHour(scanner);
                         String date = new String(day + ": " + startHour + " - " + (startHour + 1));
 
                         if (doctor.isAvailable(date)) {
                             String confirmation = user.confirmAppointment(scanner, doctorName, date);
-
                             if (confirmation.equals("yes")) {
                                 doctor.scheduleConsultation(patient, date);
+                                System.out.println("Consultation scheduled!");
                             }
+                            break;
                         } else
-                            System.out.println("You have chosen an unavailable slot.");
-                    } else
-                        System.out.println(doctorName + " is not working as a doctor in our hospital.");
+                            System.out.println("You have chosen an unavailable slot!");
+                    }
                 }
                 break;
 
@@ -189,7 +194,6 @@ public class HospitalManager {
                         doctor.listScheduledConsultations();
                     } else
                         System.out.println(doctorName + " is not working as a doctor in our hospital.");
-
                     break;
 
                 case 8:
@@ -202,7 +206,7 @@ public class HospitalManager {
                     String patientCNP = user.insertCNP(scanner);
                     if (hospital.isEnrolled(patientCNP)) {
                         Patient patient = hospital.getEnrolledPatient(patientCNP);
-                        String nameOfIllness = user.insertIllness(scanner);
+                        String nameOfIllness = user.insertIllness(scanner, hospital);
 
                         MedicalCondition medicalCondition = new MedicalCondition(nameOfIllness, associatedDrugs.get(nameOfIllness));
                         patient.addMedicalCondition(medicalCondition);

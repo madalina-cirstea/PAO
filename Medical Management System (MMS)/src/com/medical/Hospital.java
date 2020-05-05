@@ -1,17 +1,53 @@
 package com.medical;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Hospital {
     private String name;
     private List<Doctor> doctors;
     private List<Patient> enrolledPatients;
+    private Map<Integer, String> consultationTypes;
+    private ArrayList<String> illnesses;
 
     public Hospital(String name) {
         this.name = name;
         this.doctors = new ArrayList<Doctor>();
         this.enrolledPatients = new ArrayList<Patient>();
+
+        this.consultationTypes = new HashMap<Integer, String>();
+        this.consultationTypes.put(0, "general");
+        this.consultationTypes.put(1, "neurological");
+        this.consultationTypes.put(2, "cardiological");
+
+        this.illnesses = new ArrayList<String>();
+        illnesses.add("hypertension");
+        illnesses.add("migraine");
+        illnesses.add("heart attack");
+    }
+
+    public void listConsultationTypes() {
+        System.out.println("Consultation types:");
+        consultationTypes.forEach((k, v) -> {
+            System.out.println(Integer.toString(k) + ". " + v);
+        });
+        System.out.println();
+    }
+
+    public boolean validIllness(String illness) {
+        if (illnesses.contains(illness))
+            return true;
+        return false;
+    }
+
+    public int getNoOfConsultations() {
+        return consultationTypes.size();
+    }
+
+    public boolean validConsultationType(Integer type){
+        return consultationTypes.containsKey(type);
     }
 
     public void addDoctor(String specialization, String name, String CNP, int age, String sex) {
