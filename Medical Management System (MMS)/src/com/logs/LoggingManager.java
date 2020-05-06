@@ -2,10 +2,9 @@ package com.logs;
 
 import com.data.DoctorDataManager;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class LoggingManager {
@@ -25,24 +24,49 @@ public class LoggingManager {
     }
 
     public String createLog(String action, String timestamp, String result, String message) {
-        return action + " " + timestamp + " " + result + " " + message + '\n';
+        return "action: " + action + "     timestamp: " + timestamp + "     result:" + result + "     message: " + message + '\n';
+    }
+
+    public List<String> read(String fileName) {
+        List<String> lines = new ArrayList<>();
+
+        try (BufferedReader buffer = new BufferedReader(new
+                FileReader(fileName))) {
+            String line = buffer.readLine();
+            while (line != null) {
+                line += "\n";
+                lines.add(line);
+                line = buffer.readLine();
+            }
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("The file " + fileName + " does not exist!");
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            System.out.println(String.format("Something occurred while reading the file ", fileName));
+            e.printStackTrace();
+        }
+
+        return lines;
     }
 
     public void write(String log) {
         //  get the path to the current working directory
         File currentDir = new File("").getAbsoluteFile();
         // set the path to the csv file in the current directory
-        loggingFile = currentDir + "/Medical Management System (MMS)/src/com/logs/" + loggingFile;
+        String file = currentDir + "/Medical Management System (MMS)/src/com/logs/" + loggingFile;
+        List<String> lines = read(file);
 
-        try (BufferedWriter buffer = new BufferedWriter(new
-                FileWriter(loggingFile))) {
+
+        try (BufferedWriter buffer = new BufferedWriter(new FileWriter(file))) {
+            for (String line:lines)
+                buffer.write(line);
             buffer.write(log);
         }
         catch (IOException e) {
-            System.out.println(String.format("Something occurred while writing the file ", loggingFile));
+            System.out.println(String.format("Something occurred while writing the file ", file));
             e.printStackTrace();
         }
     }
-
-
 }
