@@ -17,15 +17,19 @@ public abstract class Person {
         System.out.println("Name: " + name + " CNP: " + CNP + " Age: " + age + " Sex: " +  sex);
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
-    int getAge() {
+    public int getAge() {
         return age;
     }
 
-    String getCNP() {
+    public String getSex() {
+        return sex;
+    }
+
+    public String getCNP() {
         return CNP;
     }
 }

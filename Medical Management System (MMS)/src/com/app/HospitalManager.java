@@ -1,7 +1,13 @@
-package com.medical;
+package com.app;
 
+import com.logs.LoggingManager;
+import com.medical.*;
+import com.patient.Patient;
+
+import javax.print.Doc;
 import java.time.LocalDate;
 import java.util.*;
+import java.time.LocalDate;
 
 public class HospitalManager {
     enum TypeOfConsultation {
@@ -52,17 +58,28 @@ public class HospitalManager {
     }
 
     public void start(User user) {
+        LoggingManager loggingManager = LoggingManager.LoggingManager();
         printMenu();
         int opp = user.chooseOperation(scanner);
 
         while (opp != 0) {
+            String action = "";
+            String timestamp = LocalDate.now().toString();
+            String result = "";
+            String message= "";
+
             switch (opp) {
                 case 1:
                     System.out.println("***** Enroll new patient to a general practitioner *****");
+                    action = "Enroll new patient";
+
                     String CNP = user.insertCNP(scanner);
 
-                    if (hospital.isEnrolled(CNP))
+                    if (hospital.isEnrolled(CNP)) {
                         System.out.println("Patient already enrolled with this CNP.");
+                        result = "failure";
+                        message = "Patient already enrolled with given CNP";
+                    }
                     else {
                         String name = user.insertName(scanner);
                         int age = user.insertAge(scanner);
@@ -87,11 +104,17 @@ public class HospitalManager {
                             float monthlyIncome = user.insertMonthlyIncome(scanner);
                             hospital.enrollAdult(name, CNP, age, sex, monthlyIncome, user.chooseDoctor(scanner, hospital, "general practitioner"));
                         }
+
+                        result = "success";
+                        message = "";
                     }
                     break;
 
                 case 2:
                     System.out.println("**** Print all enrolled patients per hospital *****");
+                    action = "Print all enrolled patients per hospital";
+                    result = "success";
+                    message = "";
                     LocalDate currentDate = LocalDate.now();
                     System.out.println("Patients enrolled in hospital at " + currentDate + ":");
                     hospital.printEnrolledPatients();
@@ -99,35 +122,52 @@ public class HospitalManager {
 
                 case 3: {
                     System.out.println("***** List all enrolled patients for a given general practitioner *****");
+                    action = "List all enrolled patients for a given general practitioner";
                     String doctorName = user.insertDoctorName(scanner);
                     if (hospital.isEmployedAs(doctorName, "general practitioner")) {
                         hospital.printEnrolledPatients(doctorName);
                         // alternative
                         // GeneralPractitioner generalPractitioner = (GeneralPractitioner) hospital.getDoctor(doctorName);
                         // generalPractitioner.printAssignedPatients();
-                    } else
+                        result = "success";
+                        message = "";
+                    } else {
                         System.out.println(doctorName + " is not working as a general practitioner in our hospital.");
+                        result = "failure";
+                        message = "Invalid general practitioner";
+                    }
                 }
                 break;
 
                 case 4:
                     System.out.println("***** List all doctors *****");
+                    action = "List all doctors";
+                    result = "success";
+                    message = "";
                     hospital.listAllDoctors();
                     break;
 
                 case 5: {
                     System.out.println("***** List all doctors for a given specialization *****");
+                    action = "List all doctors";
                     System.out.println("Specialization: (general practitioner, cardiologist, neurologist)");
                     String specialization = user.insertSpecialization(scanner);
-                    if (!specialization.equals("general practitioner") && !specialization.equals("cardiologist") && !specialization.equals("neurologist"))
+                    if (!specialization.equals("general practitioner") && !specialization.equals("cardiologist") && !specialization.equals("neurologist")) {
                         System.out.println("Our hospital has no " + specialization + " specialization.");
-                    else
+                        result = "failure";
+                        message = "Invalid specialization";
+                    }
+                    else {
                         hospital.listAllDoctors(specialization);
+                        result = "success";
+                        message = "";
+                    }
                 }
                 break;
 
                 case 6: {
                     System.out.println("***** Schedule a medical consultation *****");
+                    action = "Schedule a medical consultation";
                     System.out.println("Patient information:");
                     Patient patient;
                     String patientCNP = user.insertCNP(scanner);
@@ -178,6 +218,12 @@ public class HospitalManager {
                             if (confirmation.equals("yes")) {
                                 doctor.scheduleConsultation(patient, date);
                                 System.out.println("Consultation scheduled!");
+                                result = "success";
+                                message = "";
+                            }
+                            else {
+                                result = "failure";
+                                message = "No confirmation";
                             }
                             break;
                         } else
@@ -188,21 +234,31 @@ public class HospitalManager {
 
                 case 7:
                     System.out.println("***** List all scheduled consultations for a given doctor *****");
+                    action = "List all scheduled consultations for a given doctor";
                     String doctorName = user.insertDoctorName(scanner);
                     if (hospital.isEmployed(doctorName)) {
                         Doctor doctor = hospital.getDoctor(doctorName);
                         doctor.listScheduledConsultations();
-                    } else
+                        result = "success";
+                        message = "";
+                    } else {
                         System.out.println(doctorName + " is not working as a doctor in our hospital.");
+                        result = "failure";
+                        message = "Invalid doctor";
+                    }
                     break;
 
                 case 8:
                     System.out.println("***** List all scheduled consultations per hospital *****");
+                    action = "List all scheduled consultations per hospital";
                     hospital.printScheduledConsultations();
+                    result = "success";
+                    message = "";
                     break;
 
                 case 9: {
                     System.out.println("***** Add a medical condition to a given patient *****");
+                    action = "Add a medical condition to a given patient";
                     String patientCNP = user.insertCNP(scanner);
                     if (hospital.isEnrolled(patientCNP)) {
                         Patient patient = hospital.getEnrolledPatient(patientCNP);
@@ -210,27 +266,55 @@ public class HospitalManager {
 
                         MedicalCondition medicalCondition = new MedicalCondition(nameOfIllness, associatedDrugs.get(nameOfIllness));
                         patient.addMedicalCondition(medicalCondition);
-                    } else
+                        result = "success";
+                        message = "";
+                    } else {
                         System.out.println("Patient with CNP " + patientCNP + " is not enrolled to our hospital.");
+                        result = "failure";
+                        message = "Invalid patient";
+                    }
                 }
                 break;
 
                 case 10:
                     System.out.println("***** Print the medical history of a given patient *****");
+                    action = "Print the medical history of a given patient";
                     String patientCNP = user.insertCNP(scanner);
                     if (hospital.isEnrolled(patientCNP)) {
                         Patient patient = hospital.getEnrolledPatient(patientCNP);
                         patient.printMedicalHistory();
-                    } else
+                        result = "success";
+                        message = "";
+                    } else {
                         System.out.println("Medical history unavailable. Patient with CNP " + patientCNP + " is not enrolled to our hospital.");
+                        result = "failure";
+                        message = "Invalid patient";
+                    }
                     break;
 
                 default:
                     System.out.println("Invalid option!");
             }
 
+            loggingManager.write(loggingManager.createLog(action, timestamp, result, message));
+
             printMenu();
             opp = user.chooseOperation(scanner);
         }
     }
+
+    public void enrollPatients(List<Patient> patients) {
+        Random rnd = new Random();
+        List<GeneralPractitioner> generalPractitioners = hospital.getAllGeneralPractitioners();
+        for (Patient patient:patients) {
+            int doctorIndex = rnd.nextInt(generalPractitioners.size());
+            hospital.enrollPatient(patient, generalPractitioners.get(doctorIndex));
+        }
+    }
+
+    public void addDoctors(List<Doctor> doctors) {
+        for (Doctor doctor:doctors)
+            hospital.addDoctor(doctor);
+    }
+
 }

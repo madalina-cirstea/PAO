@@ -1,5 +1,10 @@
-package com.medical;
+package com.patient;
 
+import com.medical.Doctor;
+import com.medical.MedicalCondition;
+import com.medical.Person;
+
+import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +16,10 @@ public class Patient extends Person {
         super(name, CNP, age, sex);
         this.assignedDoctor = assignedDoctor;
         this.medicalHistory = new ArrayList<MedicalCondition>();
+    }
+
+    public void setAssignedDoctor(Doctor assignedDoctor) {
+        this.assignedDoctor = assignedDoctor;
     }
 
     public void printInfo() {
@@ -26,6 +35,10 @@ public class Patient extends Person {
             for (int i = 0; i < medicalHistory.size(); i++)
                 medicalHistory.get(i).print();
         }
+    }
+
+    public Doctor getAssignedDoctor() {
+        return assignedDoctor;
     }
 
     public String getAssignedDoctorName() {

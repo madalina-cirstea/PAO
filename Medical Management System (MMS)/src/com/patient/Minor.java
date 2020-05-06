@@ -1,4 +1,6 @@
-package com.medical;
+package com.patient;
+
+import com.medical.Doctor;
 
 public class Minor extends Patient {
     private Patient tutor;
@@ -13,5 +15,9 @@ public class Minor extends Patient {
         super.printInfo();
         System.out.print("legal tutor: ");
         tutor.printGeneralInformation();
+    }
+
+    public String getTutorCNP() {
+        return tutor.getCNP();
     }
 }

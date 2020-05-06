@@ -1,5 +1,7 @@
 package com.medical;
 
+import com.patient.Patient;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,4 +1,6 @@
-package com.medical;
+package com.patient;
+
+import com.medical.Doctor;
 
 public class Senior extends Patient {
     private float pension;
@@ -12,5 +14,9 @@ public class Senior extends Patient {
     public void printInfo() {
         super.printInfo();
         System.out.println("pension: " + pension);
+    }
+
+    public float getPension() {
+        return pension;
     }
 }

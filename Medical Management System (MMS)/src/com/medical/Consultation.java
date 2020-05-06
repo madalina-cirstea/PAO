@@ -1,5 +1,7 @@
 package com.medical;
 
+import com.patient.Patient;
+
 public class Consultation {
     private Patient patient;
     private String date;

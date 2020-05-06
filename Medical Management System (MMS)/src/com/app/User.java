@@ -1,7 +1,7 @@
-package com.medical;
+package com.app;
 
-import javax.print.Doc;
-import java.lang.reflect.Array;
+import com.medical.Doctor;
+
 import java.util.*;
 
 public class User {

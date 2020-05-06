@@ -1,5 +1,13 @@
-package com.medical;
+package com.app;
 
+import com.medical.Doctor;
+import com.medical.GeneralPractitioner;
+import com.patient.Adult;
+import com.patient.Minor;
+import com.patient.Patient;
+import com.patient.Senior;
+
+import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +65,10 @@ public class Hospital {
             doctors.add(new Doctor(specialization, name, CNP, age, sex));
     }
 
+    public void addDoctor(Doctor doctor) {
+        doctors.add(doctor);
+    }
+
     public boolean isEnrolled(String CNP) {
         for (int i = 0; i < enrolledPatients.size(); i++)
             if (enrolledPatients.get(i).getCNP().equals(CNP))
@@ -85,6 +97,14 @@ public class Hospital {
         return null;
     }
 
+    public List<GeneralPractitioner> getAllGeneralPractitioners() {
+        List<GeneralPractitioner> generalPractitioners = new ArrayList<GeneralPractitioner>();
+        for (Doctor doctor:doctors)
+            if (doctor.getSpecialization().equals("general practitioner"))
+                generalPractitioners.add((GeneralPractitioner)doctor);
+        return generalPractitioners;
+    }
+
     public Patient getEnrolledPatient(String CNP) {
         for (int i = 0; i < enrolledPatients.size(); i++)
             if (enrolledPatients.get(i).getCNP().equals(CNP))
@@ -110,6 +130,12 @@ public class Hospital {
 
         if (!foundOne)
             System.out.println("No patients enrolled for " + doctorName + ".");
+    }
+
+    public void enrollPatient(Patient patient, Doctor assignedDoctor) {
+        patient.setAssignedDoctor(assignedDoctor);
+        enrolledPatients.add(patient);
+        assignedDoctor.addAssignedPatient(patient);
     }
 
     public void enrollAdult(String name, String CNP, int age, String sex, float monthlyIncome, Doctor assignedDoctor) {

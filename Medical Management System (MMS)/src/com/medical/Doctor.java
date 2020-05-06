@@ -1,5 +1,7 @@
 package com.medical;
 
+import com.patient.Patient;
+
 import java.util.*;
 
 public class Doctor extends Person {
@@ -37,6 +39,11 @@ public class Doctor extends Person {
 
     public void addAssignedPatient(Patient patient) {
         // need this function for overriding it in extended class GeneralPractitioner which contains a list of assigned patients
+    }
+
+    public void printInfo() {
+        super.printGeneralInformation();
+        System.out.println("specialization: " + specialization);
     }
 
     public void printProgram() {
