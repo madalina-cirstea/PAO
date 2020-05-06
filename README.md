@@ -61,4 +61,4 @@ Input must be inserted exactly as required (input validation will be included fu
 
 ### Notes:
 
-I known the deadline was a little bit overdue but the data generation process took a little more time than I expected. I hope this wont cost much even though I understand it.
+I know the deadline was a little bit overdue but the data generation process took a little more time than I expected. I hope this wont cost much even though I understand it.
