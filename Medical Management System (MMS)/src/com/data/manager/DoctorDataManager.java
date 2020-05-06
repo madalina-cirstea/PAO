@@ -1,18 +1,8 @@
-package com.data;
+package com.data.manager;
 
-import com.app.Hospital;
 import com.medical.Doctor;
 import com.medical.GeneralPractitioner;
-import com.patient.Adult;
-import com.patient.Minor;
-import com.patient.Patient;
-import com.patient.Senior;
 
-import javax.print.Doc;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

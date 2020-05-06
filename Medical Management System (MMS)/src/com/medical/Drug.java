@@ -9,6 +9,14 @@ public class Drug {
         this.recommendedDose = recommendedDose;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getRecommendedDose() {
+        return recommendedDose;
+    }
+
     public void print() {
         System.out.println(name + " " + recommendedDose + " pills per day");
     }

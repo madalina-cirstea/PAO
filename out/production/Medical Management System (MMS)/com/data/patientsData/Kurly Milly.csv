@@ -1,0 +1,4 @@
+name,reportDate,drugs
+Dawson,2012-06-10,drug_name^4
+arrhythmia,2015-05-08,drug_name^1|drug_name^3
+Dyslexia,2001-11-11,drug_name^4|drug_name^1

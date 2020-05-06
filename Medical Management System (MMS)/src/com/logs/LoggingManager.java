@@ -1,10 +1,7 @@
 package com.logs;
 
-import com.data.DoctorDataManager;
-
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class LoggingManager {
@@ -24,7 +21,7 @@ public class LoggingManager {
     }
 
     public String createLog(String action, String timestamp, String result, String message) {
-        return "action: " + action + "     timestamp: " + timestamp + "     result:" + result + "     message: " + message + '\n';
+        return "{\n     action: " + action + "\n     timestamp: " + timestamp + "\n     result:" + result + "\n     error_message: " + message + "\n}\n";
     }
 
     public List<String> read(String fileName) {
@@ -57,7 +54,6 @@ public class LoggingManager {
         // set the path to the csv file in the current directory
         String file = currentDir + "/Medical Management System (MMS)/src/com/logs/" + loggingFile;
         List<String> lines = read(file);
-
 
         try (BufferedWriter buffer = new BufferedWriter(new FileWriter(file))) {
             for (String line:lines)

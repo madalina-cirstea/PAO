@@ -1,8 +1,8 @@
-package com.data;
+package com.data.header;
 
 import java.util.List;
 
-public interface Header<T>{
+public interface Header {
     public List<String> create();
 
     public default String toLine(List<String> header) {

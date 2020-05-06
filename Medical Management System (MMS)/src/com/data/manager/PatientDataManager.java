@@ -1,15 +1,10 @@
-package com.data;
+package com.data.manager;
 
-import com.app.Hospital;
-import com.medical.Doctor;
-import com.medical.GeneralPractitioner;
 import com.patient.Adult;
 import com.patient.Minor;
 import com.patient.Patient;
 import com.patient.Senior;
 
-import java.io.*;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 

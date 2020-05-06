@@ -1,5 +1,11 @@
 package com.app;
 
+import com.data.header.Header;
+import com.data.header.MedicalHistoryHeader;
+import com.data.manager.DataManager;
+import com.data.manager.DoctorDataManager;
+import com.data.manager.MedicalHistoryManager;
+import com.data.manager.PatientDataManager;
 import com.logs.LoggingManager;
 import com.medical.*;
 import com.patient.Patient;
@@ -57,7 +63,7 @@ public class HospitalManager {
         System.out.println("10. Print the medical history of a given patient.");
     }
 
-    public void start(User user) {
+    public void start(DataManager<Patient> patientDataManager, DataManager<Doctor> doctorDataManager, DataManager<MedicalCondition> medicalHistoryManager, User user) {
         LoggingManager loggingManager = LoggingManager.LoggingManager();
         printMenu();
         int opp = user.chooseOperation(scanner);
@@ -90,7 +96,7 @@ public class HospitalManager {
                             String tutorCNP = user.insertTutorCNP(scanner);
 
                             if (hospital.isEnrolled(tutorCNP)) {
-                                hospital.enrollMinor(name, CNP, age, sex, hospital.getEnrolledPatient(tutorCNP), user.chooseDoctor(scanner, hospital, "general practitioner"));
+                                hospital.enrollMinor(patientDataManager, name, CNP, age, sex, hospital.getEnrolledPatient(tutorCNP), user.chooseDoctor(scanner, hospital, "general practitioner"));
                             } else {
                                 System.out.println("The tutor of the minor must be already enrolled at the hospital in order to enroll the minor to the same hospital!");
                                 System.out.println("Enroll the tutor, than enroll the minor!");
@@ -98,11 +104,11 @@ public class HospitalManager {
                         } else if (age > 60) {
                             // senior
                             float pension = user.insertPension(scanner);
-                            hospital.enrollSenior(name, CNP, age, sex, pension, user.chooseDoctor(scanner, hospital, "general practitioner"));
+                            hospital.enrollSenior(patientDataManager, name, CNP, age, sex, pension, user.chooseDoctor(scanner, hospital, "general practitioner"));
                         } else {
                             // adult
                             float monthlyIncome = user.insertMonthlyIncome(scanner);
-                            hospital.enrollAdult(name, CNP, age, sex, monthlyIncome, user.chooseDoctor(scanner, hospital, "general practitioner"));
+                            hospital.enrollAdult(patientDataManager, name, CNP, age, sex, monthlyIncome, user.chooseDoctor(scanner, hospital, "general practitioner"));
                         }
 
                         result = "success";
@@ -201,7 +207,7 @@ public class HospitalManager {
                         doctorName = user.insertDoctorName(scanner);
                         if (hospital.isEmployedAs(doctorName, specialization))
                             break;
-                        System.out.println(doctorName + " is not working as a " + specialization + "doctor in our hospital.");
+                        System.out.println(doctorName + " is not working as a " + specialization + " doctor in our hospital.");
                     }
 
                     Doctor doctor = hospital.getDoctor(doctorName);
@@ -263,9 +269,11 @@ public class HospitalManager {
                     if (hospital.isEnrolled(patientCNP)) {
                         Patient patient = hospital.getEnrolledPatient(patientCNP);
                         String nameOfIllness = user.insertIllness(scanner, hospital);
-
                         MedicalCondition medicalCondition = new MedicalCondition(nameOfIllness, associatedDrugs.get(nameOfIllness));
                         patient.addMedicalCondition(medicalCondition);
+                        Header medicalHistoryHeader = new MedicalHistoryHeader();
+                        List<String> header = medicalHistoryHeader.create();
+                        medicalHistoryManager.append("patientsData/" + patient.getName() + ".csv", header, medicalHistoryHeader.toLine(header), medicalCondition);
                         result = "success";
                         message = "";
                     } else {

@@ -1,0 +1,4 @@
+name,reportDate,drugs
+tachycardia,2008-08-05,drug_name^0|drug_name^0
+Dyslexia,2003-03-10,drug_name^1
+Dawson,2009-07-01,drug_name^0|drug_name^4|drug_name^1

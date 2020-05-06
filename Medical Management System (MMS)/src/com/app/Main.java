@@ -1,15 +1,21 @@
 package com.app;
 
-import com.data.*;
 import com.data.generator.DataGenerator;
 import com.data.generator.DoctorGenerator;
+import com.data.generator.MedicalHistoryGenerator;
 import com.data.generator.PatientGenerator;
+import com.data.header.DoctorHeader;
+import com.data.header.Header;
+import com.data.header.MedicalHistoryHeader;
+import com.data.header.PatientHeader;
+import com.data.manager.DataManager;
+import com.data.manager.DoctorDataManager;
+import com.data.manager.MedicalHistoryManager;
+import com.data.manager.PatientDataManager;
 import com.medical.Doctor;
+import com.medical.MedicalCondition;
 import com.patient.Patient;
 
-import javax.print.Doc;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Main {
@@ -20,8 +26,10 @@ public class Main {
         DataManager<Doctor> doctorDataManager = DoctorDataManager.DoctorDataManager();
         // create patient data manager for loading / reading / writing / appending patients data
         DataManager<Patient> patientDataManager = PatientDataManager.PatientDataManager();
+        // create medical history manager for loading / reading / writing / appending medical histories data for patients
+        DataManager<MedicalCondition> medicalHistoryManager = MedicalHistoryManager.MedicalHistoryManager();
 
-
+////*******************************************************************************************************
 //        // The commented code is the code I used for randomly generating input csv files
 //
 //        // patient generator is used for generating random patients data using Java Generics Interfaces
@@ -34,13 +42,14 @@ public class Main {
 //
 //        List<String> header;
 //
-//        Header<Doctor> doctorHeader= new DoctorHeader();
+//        Header doctorHeader= new DoctorHeader();
 //        header = doctorHeader.create();
 //        doctorDataManager.write("doctors.csv", header, doctorHeader.toLine(header), randomlyGeneratedDoctors); // write randomly generated data
 //
-//        Header<Patient> patientHeader = new PatientHeader();
+//        Header patientHeader = new PatientHeader();
 //        header = patientHeader.create();
 //        patientDataManager.write("patients.csv", header, patientHeader.toLine(header), randomlyGeneratedPatients); // write randomly generated data
+////*********************************************************************************************************************************
 
         // create hospital
         Hospital hospital = new Hospital("Fundeni");
@@ -54,6 +63,30 @@ public class Main {
         List<Patient> patients = patientDataManager.load("patients.csv");
         hospitalManager.enrollPatients(patients);
 
+//// **********************************************
+//        // after generating the patients and enrolling them in the hospital
+//        // we can generate a random medical history for each patient
+//
+//        // medical history generator is used for generating random medical histories
+//        DataGenerator<MedicalCondition> medicalHistoryGenerator = new MedicalHistoryGenerator();
+//        Header medicalHistoryHeader = new MedicalHistoryHeader();
+//        header = medicalHistoryHeader.create();
+//
+//        for (Patient patient:patients) {
+//            String name = patient.getName();
+//            List<MedicalCondition> medicalConditions = medicalHistoryGenerator.generate(3);
+//            medicalHistoryManager.write("patientsData/" + patient.getName() + ".csv", header, medicalHistoryHeader.toLine(header), medicalConditions); // write randomly generated data for patient
+//        }
+//
+////***************************************************************************************************
+
+        // for each enrolled patient load the medical history from previously generated files
+        for (Patient patient:patients) {
+            String fileName = "patientsData/" + patient.getName() + ".csv";
+            List<MedicalCondition> medicalConditions = medicalHistoryManager.load(fileName);
+            patient.addMedicalConditions(medicalConditions);
+        }
+
         System.out.println("********************************************************");
         System.out.println("CSV files loaded into the hospital's system!");
         System.out.println("********************************************************");
@@ -61,6 +94,6 @@ public class Main {
         // create application user
         User user = new User();
         // start hospital manager in user mode
-        hospitalManager.start(user);
+        hospitalManager.start(patientDataManager, doctorDataManager, medicalHistoryManager, user);
     }
 }

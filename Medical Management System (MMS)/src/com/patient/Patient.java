@@ -37,6 +37,11 @@ public class Patient extends Person {
         }
     }
 
+    public void addMedicalConditions(List<MedicalCondition> medicalConditions) {
+        for (MedicalCondition medicalCondition:medicalConditions)
+            medicalHistory.add(medicalCondition);
+    }
+
     public Doctor getAssignedDoctor() {
         return assignedDoctor;
     }

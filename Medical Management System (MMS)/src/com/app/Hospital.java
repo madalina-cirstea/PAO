@@ -1,5 +1,8 @@
 package com.app;
 
+import com.data.header.Header;
+import com.data.header.PatientHeader;
+import com.data.manager.DataManager;
 import com.medical.Doctor;
 import com.medical.GeneralPractitioner;
 import com.patient.Adult;
@@ -138,19 +141,28 @@ public class Hospital {
         assignedDoctor.addAssignedPatient(patient);
     }
 
-    public void enrollAdult(String name, String CNP, int age, String sex, float monthlyIncome, Doctor assignedDoctor) {
+    public void enrollAdult(DataManager<Patient> patientDataManager, String name, String CNP, int age, String sex, float monthlyIncome, Doctor assignedDoctor) {
         enrolledPatients.add(new Adult(name, CNP, age, sex, monthlyIncome, assignedDoctor));
         assignedDoctor.addAssignedPatient(enrolledPatients.get(enrolledPatients.size() - 1));
+        Header patientHeader = new PatientHeader();
+        List<String> header = patientHeader.create();
+        patientDataManager.append("patients.csv", header, patientHeader.toLine(header), enrolledPatients.get(enrolledPatients.size() - 1));
     }
 
-    public void enrollSenior(String name, String CNP, int age, String sex, float pension, Doctor assignedDoctor) {
+    public void enrollSenior(DataManager<Patient> patientDataManager, String name, String CNP, int age, String sex, float pension, Doctor assignedDoctor) {
         enrolledPatients.add(new Senior(name, CNP, age, sex, pension, assignedDoctor));
         assignedDoctor.addAssignedPatient(enrolledPatients.get(enrolledPatients.size() - 1));
+        Header patientHeader = new PatientHeader();
+        List<String> header = patientHeader.create();
+        patientDataManager.append("patients.csv", header, patientHeader.toLine(header), enrolledPatients.get(enrolledPatients.size() - 1));
     }
 
-    public void enrollMinor(String name, String CNP, int age, String sex, Patient tutor, Doctor assignedDoctor) {
+    public void enrollMinor(DataManager<Patient> patientDataManager, String name, String CNP, int age, String sex, Patient tutor, Doctor assignedDoctor) {
         enrolledPatients.add(new Minor(name, CNP, age, sex, tutor, assignedDoctor));
         assignedDoctor.addAssignedPatient(enrolledPatients.get(enrolledPatients.size() - 1));
+        Header patientHeader = new PatientHeader();
+        List<String> header = patientHeader.create();
+        patientDataManager.append("patients.csv", header, patientHeader.toLine(header), enrolledPatients.get(enrolledPatients.size() - 1));
     }
 
     public void listAllDoctors() {

@@ -1,0 +1,4 @@
+name,reportDate,drugs
+hypertension,2017-03-20,drug_name^1
+arrhythmia,2006-09-27,drug_name^0|drug_name^1|drug_name^4
+Dyslexia,2014-12-11,drug_name^3|drug_name^0

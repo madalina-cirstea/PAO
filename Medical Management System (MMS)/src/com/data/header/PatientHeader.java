@@ -1,18 +1,19 @@
-package com.data;
+package com.data.header;
 
-import com.medical.Doctor;
+import com.patient.Patient;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DoctorHeader implements Header<Doctor> {
+public class PatientHeader implements Header {
     public List<String> create() {
         List<String> header = new ArrayList<String>();
-        header.add("specialization");
         header.add("CNP");
         header.add("name");
         header.add("age");
         header.add("sex");
+        header.add("assignedDoctor");
+        header.add("details");
         return header;
     }
 }

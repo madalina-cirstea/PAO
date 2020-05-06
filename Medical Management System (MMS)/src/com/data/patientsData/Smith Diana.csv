@@ -1,0 +1,4 @@
+name,reportDate,drugs
+Dawson,2009-04-15,drug_name^3|drug_name^2
+arrhythmia,2010-05-19,drug_name^2|drug_name^4
+tachycardia,2007-03-11,drug_name^0|drug_name^3
