@@ -56,9 +56,9 @@ Input must be inserted exactly as required (input validation will be included fu
 
 - created generic interface **DataGenerator** for data generation purposes and implemented it in classes for generating random data for patients, doctors and medical information related to patients
 - created generic interface **DataManager** for csv file manipulation and implemented it in classes capable of loading, reading, writing and appending to CSV files
-- implemented a Singleton audit service **LoggingManager** which logs the informations about the actions executed within the system (hith either failure or succes messages)
+- implemented a Singleton audit service **LoggingManager** which logs the informations about the actions executed within the system (with either failure or succes messages)
 
 
 ### Notes:
 
-I known the deadline was a little bit overdue but the data generation process took a little more time than I expected. I hope this wont cost much, but even so I understand it.
+I known the deadline was a little bit overdue but the data generation process took a little more time than I expected. I hope this wont cost much even though I understand it.
