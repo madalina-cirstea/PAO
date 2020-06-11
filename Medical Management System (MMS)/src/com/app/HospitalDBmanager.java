@@ -224,6 +224,9 @@ public class HospitalDBmanager {
                     System.out.println("17. List all program hours. (SELECT)");
                     ProgramRepo.listAllProgramHours();
                     break;
+                    
+                default:
+                    System.out.println("Invalid option!");
             }
 
             printMenu();
