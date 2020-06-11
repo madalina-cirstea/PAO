@@ -103,6 +103,33 @@ public class User {
         return age;
     }
 
+    public int insertId(Scanner scanner) {
+        boolean validResponse = false;
+        int id = 0;
+
+        while (!validResponse) {
+            try {
+                System.out.println("ID: ");
+                id = scanner.nextInt();
+                if (id <= 0) {
+                    throw new IllegalArgumentException("ID must be a positive nonzero number!");
+                }
+                validResponse = true;
+            }
+            catch (InputMismatchException e) {
+                System.out.println("ID must be a number!");
+                scanner.nextLine();
+            }
+            catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                scanner.nextLine();
+            }
+        }
+
+        scanner.nextLine();
+        return id;
+    }
+
     public String insertSex(Scanner scanner) {
         boolean validResponse = false;
         String sex = "";
@@ -182,6 +209,7 @@ public class User {
     }
 
     public String insertSpecialization(Scanner scanner) {
+        System.out.println("specialization: (general practitioner, cardiologist, neurologist, etc.)");
         return scanner.nextLine().toLowerCase();
     }
 

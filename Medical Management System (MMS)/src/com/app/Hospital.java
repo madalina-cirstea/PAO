@@ -188,4 +188,8 @@ public class Hospital {
         }
     }
 
+    public String getName() {
+        return name;
+    }
+
 }

@@ -22,6 +22,10 @@ public class Patient extends Person {
         this.assignedDoctor = assignedDoctor;
     }
 
+    public String getAssignedDoctorCNP() {
+        return assignedDoctor.getCNP();
+    }
+
     public void printInfo() {
         super.printGeneralInformation();
         System.out.println("assignedDoctor: " + assignedDoctor.getName());
