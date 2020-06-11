@@ -59,6 +59,10 @@ Input must be inserted exactly as required (input validation will be included fu
 - implemented a Singleton audit service **LoggingManager** which logs the informations about the actions executed within the system (with either failure or succes messages)
 
 
-### Notes:
+## 3rd Checkpoint
 
-I know the deadline was a little bit overdue but the data generation process took a little more time than I expected. I hope this wont cost much even though I understand it.
+### Meeting the requirements
+- used database persistence 
+- created a service class named **DBservice**
+- created class **SetUpDB** which offers the posibility to create and drop tables
+- created classes **PatientRepository**, **DoctorRepository**, **DrugRepository** and **ProgramRepository** which contain methods for: selecting, inserting, updating and deleting entries from  and in the associated tables
